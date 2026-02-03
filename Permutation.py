@@ -4,6 +4,7 @@ for test in range(1, T + 1):
     A = list(map(int, input().split()))
     B = list(map(int, input().split()))
     q = 0
+    c = 0
     lst = []
     for i in range(M): # B
         b = B[i]
