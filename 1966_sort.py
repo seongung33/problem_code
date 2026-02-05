@@ -28,3 +28,17 @@ for test_case in range(1, T + 1):
             sort_arr[count[arr[i]]] = arr[i]
         return sort_arr
     print(f"#{test_case}", *counting_sort(lst, N, max(lst)))
+
+
+# 선택 정렬
+T = int(input())
+for test_case in range(1, T + 1):
+    N = int(input())
+    lst = list(map(int, input().split()))
+    for i in range(N-1):
+        min_idx = i
+        for j in range(i+1, N):
+            if lst[min_idx] > lst[j]:
+                min_idx = j
+        lst[min_idx], lst[i] = lst[i], lst[min_idx]
+    print(f"#{test_case}", *lst)
