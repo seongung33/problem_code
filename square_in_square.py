@@ -19,7 +19,7 @@ for test in range(1, T + 1):
     for i in range(N):
         print(*matrix[i])
 
-# zz
+
 
 
     # 델타 이용 해당 방향에 일치하는 값이 있는지

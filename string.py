@@ -4,3 +4,7 @@ for test in range(1, T +1):
     s2 = input()
 
     s_count = [0]* 26
+
+    for c in s1
+
+        s1_count[c] = 1
