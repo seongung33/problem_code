@@ -21,7 +21,7 @@ for test in range(1, T + 1):
 
 
 
-
+#as
     # 델타 이용 해당 방향에 일치하는 값이 있는지
     # N, M = map(int, input().split())
     # matrix = [[0] * N for _ in range(N)]]
