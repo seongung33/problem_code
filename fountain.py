@@ -8,13 +8,11 @@ ex) 대각수가 4이면 1/4로 시작한다.
 만약 짝수라면 X의 수만큼 1의 값을 키워주고 똑같이 n=1의 값을 줄이면 결과가 나온다.
 '''
 X = int(input())
-count = 0
 i = 0
 while True:
     i += 1
     if X - i  > 0:
         X = X- i
-        count+= 1
     else:
         break
 # print(X)
@@ -24,4 +22,4 @@ if i % 2 == 1:
     print(f"{i-X+1}/{X}")
 #짝수라면 1/i 시작
 elif i % 2 == 0:
-    print(f"{X}/{i-X+1}")
+    print(f"{X}/{i-X+1}") 

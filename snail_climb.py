@@ -2,7 +2,7 @@ A, B, V = map(int, input().split())
 
 start = 0
 end = 1000000000 
-#t = 0  문제점 찾기용
+#t = 0  #문제점 찾기용
 # 이진 탐색 이용
 # 1시간 반 소요...
 #지피티랑 대화 몇 번 했는데 할루시 개 당했습니다...
@@ -23,4 +23,5 @@ while True:
     elif  A*i -B*(i-1) <= V: # 작은경우 시작 값을 키운다.
         start = i + 1
     # print(start, end, i)
+    # print(t)
 print(answer)

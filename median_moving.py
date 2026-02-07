@@ -1,3 +1,4 @@
+#백준 중앙이동
 N = int(input())
 
 square = 1 # 시작값
