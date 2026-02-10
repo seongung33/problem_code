@@ -30,4 +30,3 @@ for i in range(7-1, 0, -1):
         if ans[j] > ans[j+1]:
             ans[j], ans[j+1] = ans[j+1], ans[j]
 print(*ans, sep = '\n')
-

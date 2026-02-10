@@ -14,8 +14,8 @@ max_sum = 0
 #             if cnt > 3:
 #                 break
 #             s += num[j]
-#
-#
+
+
 #     if max_sum < s and s <= M and cnt == 3:
 #         max_sum = s
 #         # print(max_sum)
