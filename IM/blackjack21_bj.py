@@ -26,6 +26,7 @@ max_sum = 0
 for i in range(N):
     for j in range(i+1, N):
         for k in range(j+1, N):
+            # 만족하는 조건중 가장 큰 값을 최댓값 지정
             if max_sum < num[i]+num[j]+num[k] and num[i]+num[j]+num[k] <= M:
                 max_sum = num[i]+num[j]+num[k]
 print(max_sum)
