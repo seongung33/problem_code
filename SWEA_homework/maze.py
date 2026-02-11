@@ -70,7 +70,7 @@ for test in range(1, T+1):
 # for test in range(1, T + 1):
 #     N = int(input()) # 미로의 크키
 #     maze = [list(map(int, input())) for _ in range(N)]
-#
+
 #     si, sj = start()
 #     def dfs(si, sj):
 #         visited = [[0] * N for _ in range(N)]
@@ -82,7 +82,7 @@ for test in range(1, T+1):
 #             # 출구
 #             if maze[i][j] == 3:
 #                 return 1
-#
+
 #             for d in range(4):
 #                 ni = i + di[d]
 #                 nj = j + dj[d]
@@ -91,7 +91,7 @@ for test in range(1, T+1):
 #                     stack.append([i, j])
 #                     i, j =ni, nj
 #                     break
-#
+# #
 #             else:
 #                 if stack:
 #                     i, j = stack.pop()
