@@ -29,9 +29,11 @@ dx = [1, 0, -1, 0]
 
 # 재귀: 덜어냄의 미학.
 # 부족한 점을
+# for 문 안의 if visited가 가지치기 중 하나.
+# 단 목적지에 도달해도 for문 안에서 다른 방향으로 진입한다.
 def maze_runner(r, c):
     global ans
-    # print(r,c, maze[r][c])
+    print(r,c, maze[r][c])
     # 도착했다면 1을 반환하라
     if maze[r][c] ==3:
         ans = 1
