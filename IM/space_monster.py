@@ -22,15 +22,17 @@ for test in range(1, T + 1):
     # 괴물위치 설정
     si, sj = monster()
     # 전체 크기 - 괴물의 레이저 수를 통해 계산한다.
-    cnt = N*N 
-    print(cnt)
+    # 괴물의 위치는 레이저가 닿지 않지만 안전지대는 아니라 -1 해준다.
+    # 문제가 잘못 된 듯.. 등잔 밑이 어두운 법인데...
+    cnt = N*N - 1
+    # print(cnt)
     #벽은 안전한 칸에서 제외기 때문에 빼준다.
     for i in range(N):
         for j in range(N):
             #벽일경우
             if matrix[i][j] == 1:
                 cnt -= 1
-    print(cnt)
+    # print(cnt)
     #레이저가 닿이는 곳도 빼준다.
     for d in range(4):
         # 괴물의 자리는 못 쏘기 때문에 1 부터 시작한다.
@@ -44,4 +46,4 @@ for test in range(1, T + 1):
             if in_range(ny, nx) and matrix[ny][nx] == 0:
                 cnt -= 1
                 # print(cnt)
-    print(F"#{test} {cnt+1}")
+    print(F"#{test} {cnt}")

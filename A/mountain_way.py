@@ -41,13 +41,14 @@ cnt = 0
 
 def dfs(i, j):
     global cnt, max_cnt, valid
-    print(i, j, cnt)
-    if max_cnt < cnt:
+    # print(i, j, cnt)
+    if max_cnt <= cnt:
         max_cnt = cnt
-        
+
     for d in range(4):
         ny = i + dy[d]
         nx = j + dx[d]
+        # 내려가기
         if in_range(ny, nx) and mat[i][j] > mat[ny][nx] and not visited[ny][nx]:
             cnt += 1
             visited[ny][nx]= 1
@@ -58,7 +59,7 @@ def dfs(i, j):
         elif in_range(ny, nx) and valid and mat[i][j] <= mat[ny][nx] and not visited[ny][nx]:
             if mat[ny][nx] - K < mat[i][j]:
                 for p in range(1, K+1):
-                    if mat[ny][nx] - p < mat[i][j]:
+                    if mat[ny][nx] - p < mat[i][j] and mat[ny][nx] - p >= 0:
                         # 다음부터 땅 파기 금지
                         valid = False
                         # 땅 파기
@@ -74,7 +75,7 @@ def dfs(i, j):
                         # 땅은 언제나 최소한으로 파는 것이 이득
                         # 다른 곳을 가기 위해선 높은 지대가 유리
                         # 더 깊이 땅을 팔 필요가 없다.
-                        break # for p
+                        break# for p
 
 
 T = int(input())
@@ -97,11 +98,31 @@ for test in range(1, T+1):
     # 아래 list comprehension 식은 AI를 이용했다.
     start1 = [x for x in start1 if x != 0]
 
-    # 방문지도
-    visited = [[0] for _ in range(N)]
-
+  
     max_cnt = 1
     for y, x in start1:
+        # 방문지도 
+        # 봉우리 따라 초기화 해야됨
+        visited = [[0]*N for _ in range(N)]
+        # 시작점 방문 후 dfs 진입
+        visited[y][x] = 1
         cnt = 1 # 시작점도 길이기 때문
         dfs(y, x)
     print(F"#{test} {max_cnt}")
+
+    '''
+    방문지도 없이 41개
+    방문지도 만드니 46개
+    반례가 무엇일까..?
+    시작점을 방문하지 않았고
+    방문지도를 초기화 하지 않았다.
+
+    AI 사용을 한 군데만 해서 뿌듯하다.
+    dfs 와 백트레킹만 잘 다룬다면
+    dfs 문제는 쉽게 풀 수 있을 듯 하다.
+    문제에서 주어진 특이한 조건 땅 파기 와 같은 조건을
+    어떤 식으로 처리해야 하는지가 큰 관건인 듯 하다.
+
+    또한 내려가기만 해서 방문지도가 필요 없을 줄 알았지만
+    지나 온 곳을 땅을 깎지 않기 위해 필요하다.
+    '''

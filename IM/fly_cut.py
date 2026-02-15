@@ -25,19 +25,19 @@ for test in range(1, T + 1):
             # 대각 방향
             s2 = matrix[i][j]
             for d in range(4):
-                for m in range(M):
+                for m in range(1, M):
                     #가로세로
-                    ny1 = i + dy1[d]
-                    nx1 = j + dx1[d]
+                    ny1 = i + dy1[d]*m
+                    nx1 = j + dx1[d]*m
                     #대각 방향
-                    ny2 = i + dy2[d]
-                    nx2 = j + dx2[d]
+                    ny2 = i + dy2[d]*m
+                    nx2 = j + dx2[d]*m
                 #가로 세로
-                if in_range(ny1, nx1):
-                    s1 += matrix[ny1][nx1]
-                # 대각
-                if in_range(ny2, nx2):
-                    s2 += matrix[ny2][nx2]
-            if max_kill < s1 or max_kill < s2:
+                    if in_range(ny1, nx1):
+                        s1 += matrix[ny1][nx1]
+                    # 대각
+                    if in_range(ny2, nx2):
+                        s2 += matrix[ny2][nx2]
+            if max_kill <= s1 or max_kill <= s2:
                 max_kill = max(max_kill, s1, s2)
     print(F"#{test} {max_kill}")
