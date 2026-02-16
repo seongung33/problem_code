@@ -38,13 +38,13 @@ def in_range(y, x):
 valid = True
 # 등산로 개수 세기
 cnt = 0
-
+# 재귀함수
 def dfs(i, j):
     global cnt, max_cnt, valid
     # print(i, j, cnt)
     if max_cnt <= cnt:
         max_cnt = cnt
-
+    # 최댓값을 갱신해도 더 진행할 수 있기 때문에 else와 return을 쓰지 않는다.
     for d in range(4):
         ny = i + dy[d]
         nx = j + dx[d]
@@ -61,6 +61,7 @@ def dfs(i, j):
                 for p in range(1, K+1):
                     if mat[ny][nx] - p < mat[i][j] and mat[ny][nx] - p >= 0:
                         # 다음부터 땅 파기 금지
+                        # valid 가 False라면 땅을 판 것 True라면 땅을 팔 수 있다.
                         valid = False
                         # 땅 파기
                         mat[ny][nx] -= p
@@ -98,8 +99,9 @@ for test in range(1, T+1):
     # 아래 list comprehension 식은 AI를 이용했다.
     start1 = [x for x in start1 if x != 0]
 
-  
+    # 시작지점인 봉우리를 포함한 값이다.
     max_cnt = 1
+    # 최대 높이인 봉우리의 개수만큼 반복한다.
     for y, x in start1:
         # 방문지도 
         # 봉우리 따라 초기화 해야됨

@@ -46,7 +46,9 @@ for test in range(1, T+1):
     # AI
     def power_area(ya, xa):
         power = []
+        # enumerate 사용시 두개의 리스트로 묶여서 반환됨
         for idx, info in enumerate(BC):
+            # 그래서 따로 다시 쪼갠다.
             x, y, c, p = info
             center_r = y - 1   # 행
             center_c = x - 1   # 열
@@ -66,23 +68,31 @@ for test in range(1, T+1):
     total_score = 0
     
     # print(B_move)
+    # 한칸씩 이동
     for i in range(M+1):
         same = []
+        # 이동 값 저장
         ya, xa = A_move[i]
         yb, xb = B_move[i]
+        # 영향 받는 모든 위치의 충전소 저장
         power_a = power_area(ya, xa)
         power_b = power_area(yb, xb)
         # print(power_a, power_b)
         if power_a and power_b:
             for idx_a, a in power_a:
                 for idx_b, b in power_b:
+                    # 만약 같은 충전소를 쓴다면
                     if idx_a == idx_b:
+                        #same에 저장
                         same.append(b)
+            # 겹치는 충전소가 없다면 각각 최댓값에 해당하는 power를 받으면 된다.
             if not same:
                 a_sum += max([p for i, p in power_a])
                 b_sum += max([p for i, p in power_b])
+            # 만약 겹친다면
             else:
                 max_power_score = 0
+                # 모든 경우의 수와 조합을 비교하여 최댓값을 뽑는다.
                 for id1, aa in power_a + [[None, 0]]:
                     for id2, bb in power_b +[[None, 0]]:
                         if id1 == id2 and aa!= 0:
@@ -90,16 +100,19 @@ for test in range(1, T+1):
                         else:
                             score = aa + bb
                         max_power_score = max(score, max_power_score)
+                # 최댓값 저장
                 total_score += max_power_score
-                        
+        # 어느 한쪽 혹은 둘다 닿는 충전소 없을경우
         else:
+            # a가 충전소가 있다면
             if power_a:
-
                 a_sum += max([p for i, p in power_a])
+            # b가 충전소가 있다면
             if power_b:
                 b_sum += max([p for i, p in power_b])
     print(F"#{test} {a_sum+b_sum+total_score}")
 
 '''
-왜 점수가 6~10배씩 낮을까...
+마름모와 충전소가 겹칠경우를 해결하는 것이 매우 번거로운 문제.  
+마름모의 공식은 외워두는 것이 좋을 듯 하다.
 '''
