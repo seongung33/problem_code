@@ -18,14 +18,14 @@ for test in range(1, T+1):
                 d = 0
                 # y1 = i
                 # x1 = j
-                while in_range(i,j+d):
+                while in_range(i,j+d) and mat[i][j+d] == 1:
                     x1 = j+d
                     if mat[i][j+d] != 1:
                         x1= j+d
                         break # while True
                     d += 1
                 d = 0
-                while in_range(i+d,j):
+                while in_range(i+d,j) and mat[i+d][j] ==1:
                     y1 = i+d
                     if mat[i+d][j] != 1:
                         mat[i+d][j] += 1
@@ -38,7 +38,7 @@ for test in range(1, T+1):
     max_extent = 0
     extent = 0
     for i in range(0, n, 2):
-        extent = abs(square[i][0] -square[i+1][0])*abs(square[i][1] -square[i+1][1])
+        extent = (abs(square[i][0] -square[i+1][0])+1)*(abs(square[i][1] -square[i+1][1])+1)
         max_extent = max(max_extent, extent)
     print(F"#{test} {max_extent}")
   
