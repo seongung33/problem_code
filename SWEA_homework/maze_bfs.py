@@ -24,4 +24,9 @@ print(visited[N-1][M-1])
 
 
 visited = [[0]*M for _ in range(N)]
+min_vis = float('inf')
 def dfs(i, j):
+    if visited[N-1][M-1]:
+        visit = visited[N-1][M-1]
+        min_vis = min(min_vis, visit)
+        return
