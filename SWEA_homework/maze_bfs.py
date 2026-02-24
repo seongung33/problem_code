@@ -26,7 +26,19 @@ print(visited[N-1][M-1])
 visited = [[0]*M for _ in range(N)]
 min_vis = float('inf')
 def dfs(i, j):
+    global min_vis
     if visited[N-1][M-1]:
         visit = visited[N-1][M-1]
         min_vis = min(min_vis, visit)
         return
+    else:
+        for d in range(4):
+            ny = i + dy[d]
+            nx = j + dx[d]
+            if in_range(ny, nx) and maze[ny][nx] == '1' and not visited[ny][nx]:
+                print(ny, nx)
+                visited[ny][nx] = visited[i][j] + 1
+                dfs(ny, nx)
+                visited[ny][nx] -= visited[i][j] + 1
+dfs(0, 0)
+print(min_vis+1)
