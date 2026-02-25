@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    div p {
+      color: blue;
+    }
+    div > p {
+      color: crimson;
+    }
+/* 자손 결합자는 모든 자손들에게 적용되고 
+자식 결합자는 자기 자신의 자식에게만 적용된다 */
+  </style>
+</head>
+<body>
+  <div>
+    <p>자식</p>
+    <section>
+      <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;손자</p>
+    </section>
+      
+    <p>자식</p>
+  </div>
+  
+</body>
+</html>
