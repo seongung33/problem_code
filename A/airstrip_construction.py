@@ -18,26 +18,26 @@ for test in range(1, T+1):
                 continue
                 # j가 더 높음  j > j + 1
             elif diff == 1:
-                for k in range(j+1, j+1+X):
-                    if k == j + X and costruction[k] and k+1 == N -1:
+                for k in range(j+1, j+X+1):
+                    ans = airstrip[i][j+1]
+                    if not in_range(i, k):
+                        valid = False
+                        break
+                    if ans == airstrip[i][k] and costruction[k]:
                         costruction[k] = False
                     else:
                         valid = False
-                        break    
-                    if costruction[k] and airstrip[i][k] == airstrip[i][k+1]:
-                        costruction[k] = False
-                    else:
-                        valid= False
-                        break
-
+                        break # for k
+                    
             # j 가 더 낮음 j < j + 1
             elif diff == -1:
                 # print(i, j, '오른쪽')
                 for k in range(j, j-X, -1):
-                    if k == j - X+1 and costruction[k] and k == 0:
-                        costruction[k] = False
-                        
-                    elif costruction[k] and airstrip[i][k] == airstrip[i][k-1]:
+                    ans = airstrip[i][j]
+                    if not in_range(i, k):
+                        valid = False
+                        break
+                    if ans == airstrip[i][k] and costruction[k]:
                         costruction[k] = False
                     else:
                         valid = False
@@ -55,41 +55,66 @@ for test in range(1, T+1):
 
     # 세로 탐색 해야함
     for i in range(N):
-        num = airstrip[0][i]
         costruction = [True]*N
         valid = True
-        # 위에 활주로 깔기
-        for j in range(1, N):
-            if num + 1 ==airstrip[j][i]:
-                # print(i, j, '왼쪽')
-                num = airstrip[j][i]
-                for k in range(j-1, j-X-1, -1):
-                    # num과 길이가 같아야 하는 조건 추가
-                    if in_range(k, i) and costruction[k] and airstrip[k][i] == airstrip[k+1][i]:
+        #왼쪽 검사
+        for j in range(N-1):
+            diff = airstrip[j][i] - airstrip[j+1][i]
+            if diff == 0:
+                continue
+                # j가 더 높음  j > j + 1
+            elif diff == 1:
+                for k in range(j+1, j+X+1):
+                    ans = airstrip[j+1][i]
+                    if not in_range(k, i):
+                        valid = False
+                        break
+                    if ans == airstrip[k][i] and costruction[k]:
                         costruction[k] = False
                     else:
                         valid = False
-                        # print(i, valid)
                         break # for k
-            # 아래 다리 깔기
-            elif num == airstrip[j][i] + 1:
-                num = airstrip[j][i]
+                    
+            # j 가 더 낮음 j < j + 1
+            elif diff == -1:
                 # print(i, j, '오른쪽')
-                for k in range(j+1, j+X):
-                    # num과 길이가 같아야 하는 조건 추가
-                    if in_range(k, i) and costruction[k] and airstrip[k][i] == airstrip[k-1][i]:
+                for k in range(j, j-X, -1):
+                    ans = airstrip[j][i]
+                    if not in_range(k, i):
+                        valid = False
+                        break
+                    if ans == airstrip[k][i] and costruction[k]:
                         costruction[k] = False
                     else:
                         valid = False
-                        # print(i, valid)
-                        break # for k
-            elif abs(num - airstrip[j][i]) >= 2:
-                num = airstrip[j][i]
+                        break
+            else:
                 valid = False
                 break
-            if not valid:
-                break # for j
         if valid:
-            # print(i)
+            # print(i, '가로')
             cnt += 1
     print(F"#{test} {cnt}")
+
+
+
+'''
+1
+6 2
+3 3 3 2 1 1
+3 3 3 2 2 1
+3 3 3 3 3 2
+2 2 3 2 2 2
+2 2 3 2 2 2
+2 2 2 2 2 2
+'''
+'''
+1
+6 4
+3 2 2 2 1 2
+3 2 2 2 1 2
+3 3 3 3 2 2
+3 3 3 3 2 2
+3 2 2 2 2 2
+3 2 2 2 2 2
+'''
