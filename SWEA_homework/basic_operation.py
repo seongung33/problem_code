@@ -15,7 +15,7 @@ for test in range(1, 11):
         node_num = int(lst[i][0])
         node_value = lst[i][1]
         # 연산자는 자식 노드가 있다.
-        if lst[i][1] in '-+/*':
+        if lst[i][1] in "-+/*":
             cleft[node_num] = int(lst[i][2])
             cright[node_num] = int(lst[i][3])
         # 트리에 값 추가
@@ -30,16 +30,16 @@ for test in range(1, 11):
             l = postorder(cleft[i])
             r = postorder(cright[i])
             # 연산자 만나면 자식 노드로 값 계산
-            if tree[i] in '-+*/':
+            if tree[i] in "-+*/":
                 l = int(l)
                 r = int(r)
-                if tree[i] == '-':
+                if tree[i] == "-":
                     res = l - r
-                elif tree[i] == '+':
+                elif tree[i] == "+":
                     res = l + r
-                elif tree[i] == '*':
+                elif tree[i] == "*":
                     res = l * r
-                elif tree[i] == '/':
+                elif tree[i] == "/":
                     res = l / r
                 # 연산자에서의 계산 결과를 현재 위치의 트리에 저장한다.
                 tree[i] = res
@@ -47,9 +47,8 @@ for test in range(1, 11):
             return tree[i]
         return 0
 
-
     ans = postorder(1)
     # print(cleft)
     # print(cright)
     # print(tree)
-    print(F"#{test} {ans:.0f}")
+    print(f"#{test} {ans:.0f}")
