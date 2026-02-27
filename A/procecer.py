@@ -11,8 +11,7 @@ def core():
                 # 가장자리 제외하기
                 if  0< i < N-1 and 0 < j < N-1:
                     starts.append([i, j])
-
-
+                    
 dy = [1, -1, 0, 0]
 dx = [0, 0, 1, -1]
 
