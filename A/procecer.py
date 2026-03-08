@@ -4,6 +4,7 @@ core와 전원을 연결하는 전선은 직선으로만
 절대 교차는 안된다.
 가장자리 코어는 선이 없어도 연결 된 것이다.
 '''
+
 def core():
     for i in range(N):
         for j in range(N):
@@ -18,73 +19,65 @@ dx = [0, 0, 1, -1]
 def in_range(y, x):
     return 0<=y < N and 0<= x < N
 
-def dfs(starts, k, connected):
-    global cnt, max_cnt, max_cnt_2, wow, max_core
+def elec(i, j, d):
+    for k in range(1, N):
+        ny = i+ dy[d]*k
+        nx = j+ dx[d]*k
+        if not in_range(ny, nx):
+            return True, k
+        if visited[ny][nx] != 0:
+            return False, k
+
+
+def dfs(visited, core_num, cnt, idx):
+    global max_cnt, max_num
+    if max_num < core_num:
+        max_cnt = cnt 
+        max_num = core_num
+        # print(max_cnt, max_num)
+
+    elif max_num == core_num:
+        max_cnt = min(max_cnt, cnt)
+        # print(max_cnt, max_num)
     
-    if k == core_num:
-        if connected >max_core:
-            max_core = connected
-            max_cnt = cnt
-        elif connected == max_core:
-            max_cnt = min(max_cnt, cnt)
+    if  idx >= len(starts):
         return
+    y, x = starts[idx]
 
-
-
-    y, x = starts[k]
-    
-    # 연결 X
-
-
-    for i in range(4):
-        valid = True
-        point = []
-        visited[k] = 1
-        for j in range(1, N):
-            ny = y +dy[i]*j
-            nx = x +dx[i]*j
-            # 끝까지 도달
-            if not in_range(ny, nx):
-                break
-            if mat[ny][nx] != 0:
-                    valid = False
-                    break
-            point.append([ny, nx])
-        if valid:
-            for py, px in point:
-                mat[py][px] = 2
-            cnt += len(point)
-        
-            dfs(starts, k +1, connected+1)
-            cnt -= len(point)
-            for py, px in point:
-                mat[py][px] = 0
-
-    dfs(starts, k+1, connected)
+    for d in range(4):
+        line, k = elec(y, x, d)
+        if line:
+            new_cnt = 0
+            for i in range(1, k):
+                ny = y + dy[d]*i
+                nx = x +dx[d]*i
+                visited[ny][nx] = 2
+                new_cnt += 1
+            dfs(visited, core_num+1, cnt + new_cnt,idx+1)
+            for q in range(1, k):
+                ny = y + dy[d]*q
+                nx = x +dx[d]*q
+                visited[ny][nx] = 0
 
         
-
-
+    dfs(visited, core_num, cnt,idx+1)
 
 
 T = int(input())
 for test in range(1, T+1):
     N = int(input())
     mat = [list(map(int, input().split())) for _ in range(N)]
+
     starts = []
     core()
-    # print(starts[0])
-    cnt = 0
-    max_cnt = 99999999999
-    max_cnt_2 = 0
-    core_num = len(starts)
-    max_core = 0
-    visited = [0]*core_num
-    # print(core_num)
-    wow = False
-    dfs(starts, 0, 0)
-    
-    if wow:
-        print(F"#{test} {max_cnt}")
-    else:
-        print(F"#{test} {max_cnt_2}")
+    visited = [[0]*N for _ in range(N)]
+    for i in range(N):
+        for j in range(N):
+            if mat[i][j]:
+                visited[i][j] = mat[i][j]
+    max_num = 0
+    max_cnt = float('inf')
+
+    dfs(visited, 0, 0, 0)
+
+    print(F"#{test} {max_cnt}")
