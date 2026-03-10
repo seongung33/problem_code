@@ -75,7 +75,7 @@ for test in range(1, T+1):
         for j in range(N):
             if mat[i][j]:
                 visited[i][j] = mat[i][j]
-    max_num = 0
+    max_num = 0 # 최대 코어 연결 수
     max_cnt = float('inf')
 
     dfs(visited, 0, 0, 0)
