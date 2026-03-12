@@ -74,35 +74,39 @@ def check(guess):
 # User Solution
 # -------------------------
 
+'''
+ 숫자야구
+ 0 1 2 3, 4 5 6 7 을 해서 각 그룹에 몇개씩 있는지 파악
+ --> 무조건 0이 존재하는 그룹을 만들어 낸다.
+ --> 0이 존재하는 그룹을 통해  숫자야구의 개수를 추측한다.
+존재하는 숫자 네 종류 파악 후 스트라이크를 확인하여 정답을 맞춘다.
+'''
+
+
+
+
 class UserSolution:
 
     def doUserImplementation(self, guess):
+        guess_list = [[0]* 10 for _ in range(10)] # 0번 위치에  1이 올 수 있으면 해당위치 [0][1] = 1
         probably = [True]*10
+        ans = []
+        zero_find = [True] * 10
         for i in range(4):
             guess[i] = i
         result = query(guess)
-        st = result.strike
-        b = result.ball
-        if st + b == 0:
-            for i in range(4):
-                probably[i] = False
-        elif st + b == 4:
-            for i in range(4, 10):
-                probably[i] = False
+        st1 = result.strike
+        b1 = result.ball
+        guess_list.append((result, st1, b1))
 
         guess[0:4] = range(4, 8)
         result = query(guess)
-        st = result.strike
-        b = result.ball
-        if st + b == 0:
-            for i in range(4, 8):
-                probably[i] = False
-        elif st + b == 4:
-            for i in range(4):
-                probably[i] = False
-            for i in range(8, 10):
-                probably[i] = False
+        st2 = result.strike
+        b2 = result.ball
+        guess_list.append((result, st2, b2))
 
+        ans.append(8)
+        ans.append(9)
 
         # while True:
         # maybe = [0]*10
