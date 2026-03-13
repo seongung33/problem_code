@@ -20,13 +20,13 @@ AI가 원래는 이 문제가 bfs를 사용하는 문제라 하였지만
 # 인덱스 범위 넘어갈시 x
 # def in_range(y, x):
 #     return 0<= y < N and 0<= x < M
-
-
+#
+#
 # T = int(input())
 # for test in range(1, T + 1):
 #     N, M, R, C, L = map(int, input().split())
 #     under = [list(map(int, input().split())) for _ in range(N)]
-
+#
 #     # 동 남 서 북
 #     dy = [0, 1, 0, -1]
 #     dx = [1, 0, -1, 0]
@@ -46,11 +46,11 @@ AI가 원래는 이 문제가 bfs를 사용하는 문제라 하였지만
 #         # 서 북
 #         7:[2, dy[2:4], dx[2:4]],
 #     }
-
+#
 #     #방문한 곳을 저장해둔다.
-#     visited = [[0]*M for _ in range(N)] 
+#     visited = [[0]*M for _ in range(N)]
 #     # 현재 위치에서 다음으로 갈 위치
-
+#
 #     # 들어갔을 때 입구의 위치
 #     current = [[R, C]]
 #     visited[R][C] = 1
@@ -66,22 +66,22 @@ AI가 원래는 이 문제가 bfs를 사용하는 문제라 하였지만
 #                 # 해당 방면으로 이동한다.
 #                 ny = y + way[dir][1][j]
 #                 nx = x + way[dir][2][j]
-
+#
 #                 # 내가 가는 방향을 검색한다.
 #                 dir_y, dir_x = way[dir][1][j], way[dir][2][j]
 #                 for k in range(4):
 #                     if dy[k] == dir_y and dx[k] == dir_x:
 #                         d = k
 #                         break # for k
-                
+#
 #                 # 범위 밖 제거 and 해당 위치의 값이 0이면 갈 수 없다.
 #                 # 추가로 방문한 곳은 가지 않는다.
 #                 if in_range(ny, nx) and under[ny][nx] and not visited[ny][nx]:
-
+#
 #                     # 이동한 칸이 d 와 반대방향을 가리키고 있어야 한다.
-#                     op = (d + 2) % 4    
+#                     op = (d + 2) % 4
 #                     if (dy[op], dx[op]) in zip(way[under[ny][nx]][1], way[under[ny][nx]][2]):
-
+#
 #                         # 방문한 곳을 기록한다.
 #                         visited[ny][nx] = 1
 #                         # 다음 시간대에 존재할 수 있는 위치를 기록해둔다.
@@ -89,8 +89,8 @@ AI가 원래는 이 문제가 bfs를 사용하는 문제라 하였지만
 #                         # stack.append([ny, nx])
 #                         # now_y, now_x = ny, nx
 #         current = next_position
-
-
+#
+#
 #     visit = 0
 #     # print(visited)
 #     for i in range(N):
@@ -108,6 +108,17 @@ from collections import deque
 dy = [1, -1, 0, 0]
 dx = [0, 0, 1, -1]
 
+types = {
+    1:[1, 1, 1, 1],
+    2:[1, 1, 0, 0],
+    3:[0, 0, 1, 1],
+    4:[0, 1, 1, 0],
+    5:[1, 0, 1, 0],
+    6:[1, 0, 0, 1],
+    7:[0, 1, 0, 1],
+}
+
+
 T = int(input())
 for test in range(1, T + 1):
     N, M, R, C, L = map(int, input().split())
@@ -120,20 +131,37 @@ for test in range(1, T + 1):
     visited[R][C] = 1
     while q:
         r, c = q.popleft()
+
+        if visited[r][c] > L:
+            continue
+
         for d in range(4):
             ny = r + dy[d]
             nx = c + dx[d]
             if in_range(ny, nx) and not visited[ny][nx]:
                 if under[ny][nx] != 0:
-                    if under[r][c] == 1:
+                    # if under[r][c] == 1:
+                    #     q.append([ny, nx])
+                    #     visited[ny][nx] = visited[r][c] + 1
+                    if d == 0 and under[r][c] in (1, 2, 5, 6) and under[ny][nx] in (1, 2, 4, 7):
                         q.append([ny, nx])
                         visited[ny][nx] = visited[r][c] + 1
-                    elif d == 1 and under[r][c] == 2 and under[ny][nx] in (1, 2, 5, 6):
+                    elif d == 1 and under[r][c] in (1, 2, 4, 7) and under[ny][nx] in (1, 2, 5, 6):
                         q.append([ny, nx])
                         visited[ny][nx] = visited[r][c] + 1
-                    elif d == 2 and under[r][c] == 3 and under[ny][nx] in (1, 3, 6, 7):
+                    elif d == 2 and under[r][c] in (1, 3, 4, 5) and under[ny][nx] in (1, 3, 6, 7):
+                        q.append([ny, nx])
+                        visited[ny][nx] = visited[r][c] + 1
+                    elif d == 3 and under[r][c] in (1, 3, 6, 7) and under[ny][nx] in (1, 3, 4, 5):
                         q.append([ny, nx])
                         visited[ny][nx] = visited[r][c] + 1
 
-    print(visited)
+
+    visit = 0
+    # print(visited)
+    for i in range(N):
+        for j in range(M):
+            if visited[i][j] <= L and visited[i][j] > 0:
+                visit += 1
+    print(F"#{test} {visit}")
                     

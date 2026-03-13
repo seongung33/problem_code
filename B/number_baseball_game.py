@@ -88,29 +88,47 @@ def check(guess):
 class UserSolution:
 
     def doUserImplementation(self, guess):
-        guess_list = [[0]* 10 for _ in range(10)] # 0번 위치에  1이 올 수 있으면 해당위치 [0][1] = 1
-        probably = [True]*10
-        ans = []
-        zero_find = [True] * 10
-        for i in range(4):
-            guess[i] = i
-        result = query(guess)
-        st1 = result.strike
-        b1 = result.ball
-        guess_list.append((result, st1, b1))
+        # 모든 가능한 후보 생성 (10P4 = 5040)
+        candidates = []
 
-        guess[0:4] = range(4, 8)
-        result = query(guess)
-        st2 = result.strike
-        b2 = result.ball
-        guess_list.append((result, st2, b2))
+        for a in range(10):
+            for b in range(10):
+                if b == a: continue
+                for c in range(10):
+                    if c == a or c == b: continue
+                    for d in range(10):
+                        if d == a or d == b or d == c: continue
+                        candidates.append([a, b, c, d])
 
-        ans.append(8)
-        ans.append(9)
+        while True:
 
-        # while True:
-        # maybe = [0]*10
-        # g = [0]*4
+            cur = candidates[0]
+
+            for i in range(4):
+                guess[i] = cur[i]
+
+            result = query(guess)
+
+            if result.strike == 4:
+                return
+
+            new_candidates = []
+
+            for cand in candidates:
+
+                strike = 0
+                ball = 0
+
+                for i in range(4):
+                    if cur[i] == cand[i]:
+                        strike += 1
+                    elif cur[i] in cand:
+                        ball += 1
+
+                if strike == result.strike and ball == result.ball:
+                    new_candidates.append(cand)
+
+            candidates = new_candidates
 
 
 

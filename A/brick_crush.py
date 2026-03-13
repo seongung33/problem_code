@@ -1,3 +1,9 @@
+"""
+깊이 4: 4번 쏜다
+브랜치: 12
+"""
+
+
 #5656 벽돌 깨기
 import copy
 
@@ -121,3 +127,74 @@ for test in range(1, T +1):
     # dfs 탐색
     dfs_shoot(matrix)
     print(F"#{test} {min_ans}")
+
+
+################################################################
+T= int(input())
+from collections import deque
+
+def in_range(y, x):
+    return 0 <= y < H and 0<= x < W
+
+
+dy = [1, -1, 0, 0]
+dx = [0, 0, 1, -1]
+
+
+# 벽돌 쏘기
+def recur(cnt, remain, now_arr):
+    global min_ans
+    if cnt == N or remain == 0:
+        min_ans = min(min_ans, remain)
+        return
+
+    for col in range(W):
+        copy_arr = [row[:] for row in now_arr]
+        row = -1
+        for r in range(H):
+            if copy_arr[row][col]:
+                row = r
+                break
+        if row == -1:
+            continue
+
+        # bfs, 연쇄 폭발
+        q = deque([row, col, copy_arr[row][col]])
+        remain -= 1
+        copy_arr[row][col] = 0
+        while q:
+            r, c, p = q.popleft()
+
+            for k in range(1, p):
+                for d in range(4):
+                    nr = r + dy[d]*k
+                    nc = c + dx[d]*k
+
+                    if not in_range(nr, nc):
+                        continue
+
+                    if copy_arr[nr][nc] == 0:
+                        continue
+                    q.append((nr, nc, copy_arr[nr][nc]))
+                    remain -= 1
+        gravity(copy_arr)
+        #빈칸 메우기
+        # for c in range(W):
+        #     idx = H - 1
+        #     for r in range(H-1, -1, -1):
+        #         if copy_arr[r][c]:
+        #             copy_arr[r]
+
+        recur(cnt + 1, remain, copy_arr)
+
+
+
+
+
+for test in range(1, T+1):
+    N, W, H = map(int, input().split())
+    arr = [list(map(int, input().split()))]
+    now_remains = 0
+    min_ans = float('inf')
+
+    recur(0, )
