@@ -25,7 +25,7 @@ def isValid(guess):
         guess_c[guess[i]] += 1
 
     return True
-
+# 가나다
 
 def query(guess):
     global querycount
@@ -129,6 +129,7 @@ class UserSolution:
                     new_candidates.append(cand)
 
             candidates = new_candidates
+            print(len(candidates))
 
 
 
