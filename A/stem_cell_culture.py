@@ -242,5 +242,5 @@ for test in range(1, T + 1):
                 # 생존 조건: 탄생시각 + 생명력 * 2 > K
                 if birth[i][j] + 2 * grid[i][j] > K:
                     ans += 1
-                    
+            
     print(f"#{test} {ans}")
