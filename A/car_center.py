@@ -40,34 +40,63 @@ for test in range(1, T+1):
     bj = list(map(int, input().split())) # 정비 창구 M개
     tk = list(map(int, input().split())) # 고객 방문 시간 K개
 
-    ai_v = [0]*(N) # 접수 방문
-    ai_v_tk = [0]*(N) # 고객 번호
-    bj_v = [0]*M # 정비 방문
-    ai_v_tk = [0]*(M)
+    # 접수 대기 힙
+    q_ai = []
+    for i in range(K):
+        heapq.heappush(q_ai, (tk[i], i))
+    # 접수 상태 확인, 소비자 시간
+    ai_v = [[0]*2 for _ in range(N)]
+    # 정비 대기 힙
+    q_bj = []
 
-    v_tk = [[0, 0]for _ in range(1001)] # 고객 번호
-
-    a_wait = []
-    b_wait = []
-    tk_idx = 0
+    bj_v = [[0, 0] for _ in range(M)] 
+    # 인덱스가 고객방문 시간
+    ans = [[0, 0, 0] for _ in range(K)]
     time = 0
-
-    a_q = tk
-    b_q = []
-
-    while True:
-        time = a_q.heappop()
+    finished_k = 0
+    while finished_k < K:
+        # 접수 창구 처리
         for i in range(N):
-            if not ai_v[i]:
-                ai_v[i] = ai[i]
-                v_tk[time][0] = i
-                break
-        
-        # 접수창구 시간 흐름
-        for i in range(N):
-            ai_v[i] -= 1
-        # 정비창구 시간 흐름
+            if ai_v[i][0] >0:
+                ai_v[i][0] -= 1
+                if ai_v[i][0] == 0:
+
+                    customer_num = ai_v[i][1]
+                    heapq.heappush(q_bj, (time, i,  customer_num))
+
+        # 정비 창구 처리
         for i in range(M):
-            bj_v[i] -= 1
-            
+            if  bj_v[i][0] > 0:
+                bj_v[i][0] -= 1
+                if bj_v[i][0] == 0:
+                    finished_k += 1
+
+        # 새 고객 접수 창구 배정
+        for i in range(N):
+            if ai_v[i][0] == 0 and q_ai and q_ai[0][0] <= time:
+                t, customer_num = heapq.heappop(q_ai)
+                ai_v[i][0] = ai[i]
+                ai_v[i][1] = customer_num
+                ans[customer_num][0] = i
+                ans[customer_num][2] = t
+
+        # 정비 창구 배정customer_num
+        for i in range(M):
+            if bj_v[i][0] == 0 and q_bj and q_bj[0][0] <= time:
+                t, idx, customer_num = heapq.heappop(q_bj)
+                bj_v[i][0] = bj[i]
+                bj_v[i][1] = customer_num
+                ans[customer_num][1] = i
+
+        time += 1
+
+
+    a = 0
+    for i in range(K):
+        if A -1 == ans[i][0] and B -1 == ans[i][1]:
+            a += i + 1
+    if a == 0:
+        a -= 1
+    print(F"#{test} {a}")
+
 
