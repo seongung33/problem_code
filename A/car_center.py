@@ -80,7 +80,7 @@ for test in range(1, T+1):
                 ans[customer_num][0] = i
                 ans[customer_num][2] = t
 
-        # 정비 창구 배정customer_num
+        # 정비 창구 배정
         for i in range(M):
             if bj_v[i][0] == 0 and q_bj and q_bj[0][0] <= time:
                 t, idx, customer_num = heapq.heappop(q_bj)
