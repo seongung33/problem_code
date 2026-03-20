@@ -36,7 +36,7 @@ for test in range(1, T+1):
             # ans += 1
             eating_lunch_cnt = 0
             time = 0
-            stair1 = [0]*3
+            stair1 = [0]*3  2, 2, 0
             stair2 = [0]*3  
             q_1 = deque()
             q_2 = deque()
@@ -76,14 +76,7 @@ for test in range(1, T+1):
                             stair2[i] = stair[1][2]
 
                 time += 1
-                # print("time:", time)
-                # print("cnt:", eating_lunch_cnt)
-                # print("q1:", q_1)
-                # print("q2:", q_2)
-                # print("stair1:", stair1)
-                # print("stair2:", stair2)
-                # print("used:", used)
-                # print(stair)
+
             min_time = min(min_time, time)
             return
         
@@ -92,102 +85,6 @@ for test in range(1, T+1):
         visited[cnt] = False
         dfs(cnt+1)
 
-    # def dfs(cnt, time):
-    #     global stair1, stair2, min_time
-    #     valid = True
-    #     eating_lunch_cnt = 0
-    #     print(min_time, time, cnt)
-    #     print(stair1)
-    #     print(stair2)
-    #     if cnt >= person_num:
-    #         min_time = min(min_time, time)
-    #         return
-        
-    #     if min_time <= time:
-    #         return
-
-    #     if time > 400:
-    #         return
-    #     # 계단이 꽉 차면 시간만 늘리기
-    #     # 계단이 비었을 때 도착한 사람이 있다면 사람 보내기
-
-    #     # 계단 1
-    #     for i in range(3):
-    #         if not stair1[i]:
-    #             for j in range(person_num):
-    #                 if person_to_stair[j][0] <= time and not person_gone[j]:
-    #                     valid = False
-    #                     person_gone[j] =True
-
-    #                     stair1[i] = stair[0][2] + 1
-    #         for i in range(3):
-    #             if stair1[i] > 0:
-    #                 stair1[i] -= 1
-    #                 if stair1[i] == 0:
-    #                     eating_lunch_cnt += 1
-    #             if stair2[i] > 0:
-    #                 stair2[i] -= 1
-    #                 if stair2[i] == 0:
-    #                     eating_lunch_cnt += 1
-    #         dfs(cnt+ eating_lunch_cnt, time+1)
-
-
-    #     # 계단 2
-    #     for i in range(3):
-    #         if not stair1[i]:
-    #             if not stair2:
-    #                 for j in range(person_num):
-    #                     if person_to_stair[j][1] <= time and not person_gone[j]:
-    #                         person_gone[j] =True
-    #                         valid = False
-    #                         stair2[i] = stair[1][2] + 1
-    #                         for i in range(3):
-    #                             if stair1[i] > 0:
-    #                                 stair1[i] -= 1
-    #                                 if stair1[i] == 0:
-    #                                     eating_lunch_cnt += 1
-    #                             if stair2[i] > 0:
-    #                                 stair2[i] -= 1
-    #                                 if stair2[i] == 0:
-    #                                     eating_lunch_cnt += 1
-    #                         dfs(cnt+ eating_lunch_cnt, time+1)
-    #     if valid:
-    #         for i in range(3):
-    #             if stair1[i] > 0:
-    #                 stair1[i] -= 1
-    #                 if stair1[i] == 0:
-    #                     eating_lunch_cnt += 1
-    #             if stair2[i] > 0:
-    #                 stair2[i] -= 1
-    #                 if stair2[i] == 0:
-    #                     eating_lunch_cnt += 1
-    #         dfs(cnt+ eating_lunch_cnt, time+1)
-
-
-
-    # while eating_lunch_cnt < person_num:
-    #     # 1번 계단
-    #     for i in range(3):
-    #         if not stair1[i]:
-    #             for j in range(person_num):
-    #                 if person_to_stair[j][0] <= time:
-    #                     stair1[i] = stair[0][2] + 1
-    #         # 2번 계단
-    #         if not stair2[i]:
-    #             for j in range(person_num):
-    #                 if person_to_stair[j][1] <= time:
-    #                     stair2[i] = stair[1][2] +1
-    #     # 계단 내려가기
-    #     for i in range(3):
-    #         if stair1[i] > 0:
-    #             stair1[i] -= 1
-    #             if stair1[i] == 0:
-    #                 eating_lunch_cnt += 1
-    #         elif stair2[i] > 0:
-    #             stair2[i] -= 1
-    #             if stair2[i] == 0:
-    #                 eating_lunch_cnt += 1
-    #     time += 1
 
     dfs(0)
     # print(subset)
