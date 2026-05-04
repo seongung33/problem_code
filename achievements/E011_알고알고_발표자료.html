@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VQA Fine-tuning 발표</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(255,255,255,0.08);
+      --panel-strong: rgba(255,255,255,0.12);
+      --text: #edf2ff;
+      --muted: #b8c0d9;
+      --line: rgba(255,255,255,0.14);
+      --accent: #7c9cff;
+      --accent-2: #55e6c1;
+      --danger: #ff8f8f;
+      --shadow: 0 18px 48px rgba(0,0,0,0.28);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(124,156,255,0.22), transparent 28%),
+        radial-gradient(circle at top right, rgba(85,230,193,0.16), transparent 26%),
+        linear-gradient(180deg, #08101f 0%, #0d1327 45%, #10172d 100%);
+      color: var(--text);
+    }
+
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,0.08);
+      z-index: 100;
+    }
+
+    .progress > div {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.2s ease;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      backdrop-filter: blur(18px);
+      background: rgba(6, 11, 24, 0.72);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 13px;
+      transition: 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      border-color: var(--line);
+      background: rgba(255,255,255,0.05);
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 20px 80px;
+    }
+
+    .slide {
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      padding: 36px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .hero,
+    .panel {
+      width: 100%;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 44px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -80px auto;
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, rgba(124,156,255,0.22), transparent 65%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(124,156,255,0.12);
+      color: #d8e2ff;
+      border: 1px solid rgba(124,156,255,0.24);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: 1.05;
+      margin: 18px 0 14px;
+      letter-spacing: -0.04em;
+    }
+
+    h2 {
+      font-size: clamp(28px, 3.8vw, 42px);
+      line-height: 1.1;
+      margin: 0 0 16px;
+      letter-spacing: -0.03em;
+    }
+
+    h3 {
+      margin: 0 0 12px;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 17px;
+    }
+
+    .lead {
+      max-width: 880px;
+      font-size: 19px;
+    }
+
+    .meta-row,
+    .grid,
+    .stats,
+    .two-col,
+    .timeline {
+      display: grid;
+      gap: 18px;
+    }
+
+    .meta-row { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 28px; }
+    .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 24px; }
+    .two-col { grid-template-columns: 1.1fr 0.9fr; }
+    .timeline { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .card {
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 22px;
+    }
+
+    .stat {
+      padding: 22px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.05));
+      border: 1px solid var(--line);
+    }
+
+    .stat .label { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+    .stat .value { font-size: clamp(26px, 3vw, 42px); font-weight: 800; letter-spacing: -0.04em; }
+
+    .badge-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+    .badge {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+    }
+
+    ul.clean {
+      list-style: none;
+      padding: 0;
+      margin: 14px 0 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    ul.clean li {
+      position: relative;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    ul.clean li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      position: absolute;
+      left: 0;
+      top: 11px;
+    }
+
+    .code {
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(0,0,0,0.32);
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: auto;
+      color: #dbe5ff;
+      font-size: 14px;
+      line-height: 1.7;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre-wrap;
+    }
+
+    .emphasis {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .accent { color: #dbe5ff; }
+    .good { color: #caffea; }
+    .warn { color: #ffd6a6; }
+    .danger { color: #ffc1c1; }
+
+    .footer-note {
+      margin-top: 16px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px dashed rgba(255,255,255,0.15);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .step {
+      position: relative;
+      padding-left: 22px;
+    }
+
+    .step::before {
+      content: "";
+      position: absolute;
+      top: 7px;
+      left: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 0 6px rgba(124,156,255,0.12);
+    }
+
+    .muted-small {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 980px) {
+      .meta-row, .grid, .stats, .two-col, .timeline { grid-template-columns: 1fr; }
+      .slide { min-height: auto; }
+      .hero { padding: 28px; }
+      h1 { font-size: 38px; }
+      p { font-size: 16px; }
+      .nav-inner { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress"><div id="progressBar"></div></div>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="brand">VQA 발표</div>
+      <nav class="nav-links">
+        <a href="#cover">표지</a>
+        <a href="#problem">문제</a>
+        <a href="#model">모델</a>
+        <a href="#training">학습</a>
+        <a href="#inference">추론</a>
+        <a href="#result">결과</a>
+        <a href="#next">개선</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="slide" id="cover">
+      <div class="hero">
+        <div class="eyebrow">멀티모달 VQA 파인튜닝 발표</div>
+        <h1>Qwen3-VL 기반<br />객관식 이미지 질의응답 모델 개선</h1>
+        <p class="lead">
+          <span class="emphasis">Qwen3-VL-32B-Instruct</span>에
+          <span class="emphasis">4bit 양자화 + LoRA(r=64)</span>를 적용하고,
+          희소 정답 업샘플링·선지 셔플링·이미지 증강·TTA를 사용하였습니다.
+        </p>
+
+        <div class="meta-row">
+          <div class="stat">
+            <div class="label">Base Model</div>
+            <div class="value">Qwen3-VL 32B</div>
+          </div>
+          <div class="stat">
+            <div class="label">Fine-tuning</div>
+            <div class="value">LoRA r=64</div>
+          </div>
+          <div class="stat">
+            <div class="label">Train Data</div>
+            <div class="value">5073 → 6504</div>
+          </div>
+          <div class="stat">
+            <div class="label">Score</div>
+            <div class="value">0.94048</div>
+          </div>
+        </div>
+
+        
+      </div>
+    </section>
+
+    <section class="slide" id="problem">
+      <div class="panel" style="padding: 36px;">
+        <h2>1. 문제 정의</h2>
+        <div class="two-col">
+          <div class="card">
+            <h3>Task</h3>
+            <p>
+              입력은 이미지와 질문, 그리고 <span class="emphasis">a/b/c/d 4개의 선택지</span>입니다.
+              모델은 이미지를 보고 질문에 맞는 정답을 <span class="emphasis">단 하나의 소문자 알파벳</span>으로 출력해야 합니다.
+            </p>
+            <ul class="clean">
+              <li>이미지 내 객체의 종류, 개수, 재질, 위치를 함께 판단</li>
+              <li>설명 생성이 아니라 <span class="emphasis">객관식 분류</span></li>
+              <li>출력 포맷 오류가 생기면 정답이어도 평가에서 손해</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>데이터 형태</h3>
+            <div class="code">id,path,question,a,b,c,d,answer</div>
+            <ul class="clean">
+              <li>train.csv 기반으로 학습</li>
+              <li>학습 원본 데이터는 <span class="emphasis">5073개</span></li>
+              <li>테스트 데이터는 <span class="emphasis">5074개</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="model">
+      <div class="panel" style="padding: 36px;">
+        <h2>2. 모델 선택과 핵심 설정</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Base Model</h3>
+            <p>
+              <span class="emphasis">Qwen/Qwen3-VL-32B-Instruct</span>를 사용했습니다.
+              파라미터를 키우는 게 확실하고 리스크가 적은 방법으로 판단해 32B 모델을 채택했습니다.
+            </p>
+          </div>
+          <div class="card">
+            <h3>메모리 최적화</h3>
+            <p>
+              32B 모델을 학습하기 위해 <span class="emphasis">4bit 양자화</span>를 적용했습니다.
+              설정은 NF4, double quant, bfloat16 compute dtype입니다.
+            </p>
+          </div>
+          <div class="card">
+            <h3>PEFT</h3>
+            <p>
+              전체 파라미터를 다 학습하지 않고, <span class="emphasis">LoRA</span>로 주요 projection 레이어만 효율적으로 조정했습니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="code">MODEL_ID = "Qwen/Qwen3-VL-32B-Instruct"
+
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_use_double_quant=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.bfloat16,
+)
+
+lora_config = LoraConfig(
+    r=64,
+    lora_alpha=128,
+    lora_dropout=0.05,
+    bias="none",
+    target_modules=["q_proj","k_proj","v_proj","o_proj","gate_proj","up_proj","down_proj"],
+    task_type="CAUSAL_LM",
+)</div>
+      </div>
+    </section>
+
+    <section class="slide" id="prompt">
+      <div class="panel" style="padding: 36px;">
+        <h2>3. 프롬프트 설계</h2>
+        <div class="two-col">
+          <div class="card">
+            <h3>시스템 지시문</h3>
+            <p>
+              모델이 설명을 장황하게 생성하지 않도록,
+              <span class="emphasis">"a, b, c, d 중 하나만 출력"</span>하도록 강하게 제약했습니다.
+            </p>
+            <ul class="clean">
+              <li>정답 알파벳 편향 방지 문구 포함</li>
+              <li>불필요한 설명, 구두점, 추가 텍스트 금지</li>
+              <li>출력 파싱 안정성 향상</li>
+              <li>영어로 작성</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>유저 프롬프트</h3>
+            <p>
+              test.csv와 같은 언어인 한국어로 이미지 관찰을 요구하고,
+              질문과 선택지를 구조화해서 넣었습니다.
+              특히 <span class="emphasis">객체 종류·개수·재질</span>을 꼼꼼히 보라고 유도합니다.
+            </p>
+            <div class="code">"주어진 사진을 꼼꼼하게 관찰하고..."
+"질문: {question}"
+"선택지: a, b, c, d"
+"가장 적절한 정답의 알파벳 소문자만 출력"</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="training">
+      <div class="panel" style="padding: 36px;">
+        <h2>4. 데이터 전략과 학습 설계</h2>
+        <div class="timeline">
+          <div class="card">
+            <h3>희소 정답 업샘플링</h3>
+            <p>
+              정답 텍스트 기준으로 드문 샘플을 복제해 학습 데이터 불균형을 완화했습니다.
+            </p>
+            <div class="badge-row">
+              <div class="badge">원본 5073개</div>
+              <div class="badge">업샘플링 후 6504개</div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>선지 셔플링</h3>
+            <p>
+              데이터셋에서 매 샘플마다 보기 순서를 실시간으로 섞어,
+              특정 알파벳 위치에 대한 편향을 줄이도록 설계했습니다.
+            </p>
+          </div>
+          <div class="card">
+            <h3>증강 적용</h3>
+            <p>
+              복제본 및 2, 3 에폭에서 이미지 증강을 적용하여
+              일반화 성능 향상을 노렸습니다.
+            </p>
+            <ul class="clean">
+              <li>해상도 변경:
+                <div class="code" style="margin-top: 8px; margin-bottom: 0;">min_pixels=256*28*28,
+max_pixels=1536*28*28</div>
+              </li>
+              <li>이미지 전처리 과정에서 동적 해상도 조정</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="label">Gradient Accumulation</div>
+            <div class="value">4</div>
+          </div>
+          <div class="stat">
+            <div class="label">Optimizer</div>
+            <div class="value">AdamW 8bit</div>
+          </div>
+          <div class="stat">
+            <div class="label">Learning Rate</div>
+            <div class="value">2e-4</div>
+          </div>
+          <div class="stat">
+            <div class="label">Scheduler</div>
+            <div class="value">Cosine</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="pipeline">
+      <div class="panel" style="padding: 36px;">
+        <h2>5. 전체 학습 파이프라인</h2>
+        <div class="grid">
+          <div class="card step">
+            <h3>Step 1</h3>
+            <p>Qwen3-VL-32B 로드 + 4bit 양자화 + gradient checkpointing</p>
+          </div>
+          <div class="card step">
+            <h3>Step 2</h3>
+            <p>LoRA 적용 후 trainable parameter만 효율 학습</p>
+          </div>
+          <div class="card step">
+            <h3>Step 3</h3>
+            <p>희소 정답 업샘플링 및 선지 셔플링, 이미지 증강</p>
+          </div>
+          <div class="card step">
+            <h3>Step 4</h3>
+            <p>8bit AdamW + cosine scheduler로 학습 진행</p>
+          </div>
+          <div class="card step">
+            <h3>Step 5</h3>
+            <p>adapter와 processor 저장 후 zip 압축 및 백업</p>
+          </div>
+          <div class="card step">
+            <h3>Step 6</h3>
+            <p>최종 검증 및 성능 측정 (테스트셋 전체 추론)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="inference">
+      <div class="panel" style="padding: 36px;">
+        <h2>6. 추론 전략</h2>
+        <div class="two-col">
+          <div class="card">
+            <h3>TTA 적용</h3>
+            <p>
+              테스트 시 <span class="emphasis">원본 이미지 + 좌우반전 이미지</span>를 각각 넣어 두 번 추론했습니다.
+              단일 시점 판단보다 안정적인 선택을 기대할 수 있습니다.
+            </p>
+            <ul class="clean">
+              <li>원본 이미지 로짓 계산</li>
+              <li>좌우반전 이미지 로짓 계산</li>
+              <li>두 결과를 결합해 최종 답 선택</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>로짓 기반 선택</h3>
+            <p>
+              생성된 텍스트를 파싱하는 대신,
+              마지막 토큰의 로짓 중 <span class="emphasis">a, b, c, d 토큰만 추출</span>해 비교했습니다.
+            </p>
+            <div class="code">target_choices = ['a', 'b', 'c', 'd']
+target_ids = [tokenizer.encode(c, add_special_tokens=False)[0] for c in target_choices]
+choice_logits = outputs.logits[0, -1, target_ids]</div>
+          </div>
+        </div>
+
+        <div class="footer-note">
+          이 방식은 출력 문장 파싱 오류를 줄이고,
+          <span class="good">객관식 문제에 더 직접적인 판별 구조</span>를 제공한다는 장점이 있습니다.
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" id="result">
+      <div class="panel" style="padding: 36px;">
+        <h2>7. 실험 포인트와 성과 해석</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>강점 1</h3>
+            <p>
+              32B급 대형 멀티모달 모델을 <span class="emphasis">4bit + LoRA</span>로 현실적인 자원 안에서 학습했습니다.
+            </p>
+          </div>
+          <div class="card">
+            <h3>강점 2</h3>
+            <p>
+              단순 fine-tuning이 아니라 <span class="emphasis">업샘플링, 보기 셔플링, 증강, TTA, 로짓 비교</span>까지 다층적으로 개선했습니다.
+            </p>
+          </div>
+          <div class="card">
+            <h3>강점 3</h3>
+            <p>
+              결과물 저장, zip 백업, 드라이브 복사까지 포함해
+              <span class="emphasis">재현 가능한 실험 흐름</span>을 만들었습니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="label">원본 데이터</div>
+            <div class="value">5073</div>
+          </div>
+          <div class="stat">
+            <div class="label">증강 후 데이터</div>
+            <div class="value">6504</div>
+          </div>
+          <div class="stat">
+            <div class="label">학습 에포크</div>
+            <div class="value">3</div>
+          </div>
+          <div class="stat">
+            <div class="label">최종 점수</div>
+            <div class="value">0.94048</div>
+          </div>
+        </div>
+
+        <div class="footer-note">
+          <br />
+          "Qwen3-VL-32B에 LoRA(r=64)를 적용하고, 희소 정답 업샘플링과 로짓 기반 추론을 결합해 성능을 끌어올렸습니다.
+          특히 출력 포맷 오류를 줄이기 위해 a/b/c/d 후보 로짓만 직접 비교한 점이 핵심입니다."
+        </div>
+      </div>
+    </section>
+
+
+
+    <section class="slide" id="ending">
+      <div class="hero">
+        <div class="eyebrow">Conclusion</div>
+        <h2>핵심 정리</h2>
+        <p class="lead">
+          이번 실험은 <span class="emphasis">대형 멀티모달 모델을 제한된 자원 안에서 효율적으로 튜닝</span>하고,
+          데이터 불균형과 출력 포맷 문제를 함께 다뤘다는 점에서 의미가 있습니다.
+          <span class="emphasis">"모델 자체보다도 학습 전략과 추론 전략의 조합으로 성능을 끌어올렸다"</span>는 메시지를 중심으로 전달하면 좋습니다.
+        </p>
+        <div class="badge-row">
+          <div class="badge">Qwen3-VL-32B</div>
+          <div class="badge">4bit Quantization</div>
+          <div class="badge">LoRA r=64</div>
+          <div class="badge">Upsampling</div>
+          <div class="badge">Choice Shuffle</div>
+          <div class="badge">TTA</div>
+          <div class="badge">Logit-based Inference</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const progressBar = document.getElementById('progressBar');
+    const updateProgress = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      progressBar.style.width = progress + '%';
+    };
+    window.addEventListener('scroll', updateProgress);
+    updateProgress();
+  </script>
+</body>
+</html>
