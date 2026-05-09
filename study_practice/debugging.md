@@ -15,7 +15,7 @@ Django ORM(Model.objects.filter 등) 사용법뿐만 아니라, 기본적인 SQL
 3. STATIC_URL = 'static/' - 브라우저에서 접근할 URL 주소 변수명부터 작성해야 한다.   
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
-] - 정적파일 css, js, 이미지 등을 어디서 찾을지 알려주는 설정. 리스트 정의부터 작성해야 한다. 
+] - 정적파일 css, js, 이미지 등을 어디서 찾을지 알려주는 설정. 변수명부터 작성해야 한다. 
 4. AUTH_USER_MODEL = 'accounts.User' - 쟝고의 기본 User 대신 직접 만든 User를 사용하겠다는 뜻. models 에서 추가로 다룰 예정
 
 ## urls
@@ -26,7 +26,7 @@ ex) path('accounts/', include('accounts.urls')) - accounts란 이름의 앱에 �
 
 # 앱
 ## models
-1. from django.contrib.auth.models import AbstractUser - 유저 모델 선언시 필요(수기 입력 대체) 이걸 사용시 settings의 4번 입력 필요 클래스 선언은 2번
+1. from django.contrib.auth.models import AbstractUser - 유저 모델 선언시 필요(수기 입력 대체) 이걸 사용시 settings의 4번 입력 필요   클래스 선언은 아래에 적혀있다.
 2. class User(AbstractUser): pass - 클래스 선언하는법이다. 괄호안 대문자 유의
 3. models.ManyToManyField - 다대다 선언 
 4. 
@@ -39,9 +39,11 @@ ex) path('accounts/', include('accounts.urls')) - accounts란 이름의 앱에 �
 1. app_name = 'accounts' - 앱 네임을 선언해야 한다. 추후에 views 와 html에 일치하게 작성해야 한다.(아마)
 2. from . import views - 이걸 통해 views에 있는 함수를 들고와야한다.(아마 )
 3. path('delete/', views.delete, name='delete') 셋 모두 일치하게 적는 것이 좋다. 이는 views의 함수명과도 일치해야 한다. 
-4.  ```py
-5.  path("<int:user_pk>/subscribe/", views.subscribe, name="subscribe")
-``` - views 함수에서 받아야 할 인자가 추가로 있을경우 위처럼 ```<int:user_pk>``` 로 써야한다 혹은 ```<str:name>```도 있다.
+4. 
+```py
+path("<int:user_pk>/subscribe/", views.subscribe, name="subscribe")
+```
+views 함수에서 받아야 할 인자가 추가로 있을경우 위처럼 ```<int:user_pk>``` 로 써야한다 혹은 ```<str:name>```도 있다.
 ## views
 1. if request.method == 'POST': - POST인지 GET인지 바꿀 수 있을듯 
 2. return redirect('todos:index') - redirect는 무조건 앱이름:함수명 으로 작성되어야 함 
@@ -59,7 +61,7 @@ ex) path('accounts/', include('accounts.urls')) - accounts란 이름의 앱에 �
 <form action="{% url "todos:recommend" todo.pk %}" method="POST">
 ``` 
 - forms 사용시 url 있는지 확인 뒷부분의 todos:recommend의 구조는 todos -> urls 에서 말한 app_name과 일치 해당 위치 app의 views 함수에 recommend가 있어야 한다. 해당 recommend 함수의 인자가 두개 이상일 경우(request 제외 더 필요한지) 필요한 매개변수 작성해주기 여기선 todo.pk 이다. 또한 POST인지 GET인지 확인 
-2. {% csrf_token %} - POST 요청이라면 필수 꼭 확인하기  
+1. {% csrf_token %} - POST 요청이라면 필수 꼭 확인하기  
 ## 파일 저장 위치
 솔직히 이걸로는 시험에 안 나올듯 한데 혹시 모르니까   
 templates, static의 폴더 위치, 이름 오타 없는지 확인하기   
