@@ -7,6 +7,7 @@ for test in range(1, T+1):
     N, X = map(int, input().split())
     airstrip = [list(map(int, input().split())) for _ in range(N)]
     cnt = 0
+    
     # 가로 탐색
     for i in range(N):
         costruction = [True]*N
