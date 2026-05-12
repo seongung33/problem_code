@@ -10,7 +10,7 @@ import copy
 # 델타
 dy = [1, -1, 0, 0]
 dx = [0, 0, 1, -1]
-# 범위 제한
+# 범위 제한+
 def in_range(y, x):
     return 0 <= y < H and 0<= x < W
 
