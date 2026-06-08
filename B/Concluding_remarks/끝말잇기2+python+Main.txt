@@ -1,0 +1,36 @@
+def init(N, M, mWords):
+    pass
+
+def playRound(mID, mCh):
+    pass
+
+# 소스코드와 같은 디렉토리에 input.txt 파일을 생성해서 거기에 입력을 넣은 뒤 아래 주석을 지우면 편하게 실행 가능합니다 :)
+# fs = open("input.txt", "r")
+# input = fs.readline
+
+def run():
+    ok = True
+    N, M = map(int, input().split())
+    mWords = [input().rstrip() for i in range(M)]
+
+    init(N, M, mWords)
+
+    cnt = int(input())
+    for _ in range(cnt):
+        line = input().split()
+
+        mID = int(line[0])
+        mCh = line[1]
+        ret = playRound(mID, mCh)
+        ans = int(line[2])
+
+        if ret != ans:
+            ok = False
+
+    return ok
+
+T, MARK = map(int, input().split())
+
+for tc in range(1, T + 1):
+    score = MARK if run() else 0
+    print(f'#{tc} {score}')
