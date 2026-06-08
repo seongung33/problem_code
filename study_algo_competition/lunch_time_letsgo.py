@@ -36,7 +36,7 @@ for test in range(1, T+1):
             # ans += 1
             eating_lunch_cnt = 0
             time = 0
-            stair1 = [0]*3  2, 2, 0
+            stair1 = [0]*3  #2, 2, 0
             stair2 = [0]*3  
             q_1 = deque()
             q_2 = deque()
