@@ -1,5 +1,5 @@
 import sys
-from solution import init, add, move, search, go
+from problem_code.Python.B.vocabulary_list.solution import init, add, move, search, go
 
 CMD_INIT = 100
 CMD_ADD = 200
